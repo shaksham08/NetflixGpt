@@ -1,13 +1,32 @@
-import { useState } from 'react'
-import './App.css'
+import { useState } from "react";
+import "./App.css";
+import Body from "./components/Body";
+import { createBrowserRouter, RouterProvider } from "react-router";
+import Browse from "./components/Browse";
+import Login from "./components/Login";
+import SignUp from "./components/SignUp";
 
 function App() {
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Body />,
+    },
+    {
+      path: "/login",
+      element: <Login />,
+    },
+    {
+      path: "/signup",
+      element: <SignUp />,
+    },
+    {
+      path: "/browse",
+      element: <Browse />,
+    },
+  ]);
 
-  return (
-    <>
-      <h1 className='bg-amber-400'> This is netflix gpt</h1>
-    </>
-  )
+  return <RouterProvider router={router} />;
 }
 
-export default App
+export default App;
