@@ -1,11 +1,11 @@
 import React from "react";
 
-import netflixLogo from "../assets/Netflix_Logo_RGB.png";
 import { Link } from "react-router";
+import NetflixLogoHeader from "./NeflixLogoHeader/NetflixLogoHeader";
 
 const Login = () => {
   return (
-    <div className="relative h-screen">
+    <div className="h-full">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
@@ -16,15 +16,8 @@ const Login = () => {
         <div className="absolute inset-0 bg-black opacity-50"></div>
       </div>
 
-      {/* Netflix Logo */}
-      <div className="absolute top-0 left-0 p-8">
-        <Link to="/">
-          <img
-            className="w-[148px] h-[50px]"
-            src={netflixLogo}
-            alt="netflix logo"
-          />
-        </Link>
+      <div className="relative z-10">
+        <NetflixLogoHeader />
       </div>
 
       {/* Login Form */}
