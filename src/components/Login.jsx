@@ -1,9 +1,22 @@
 import React from "react";
-
+import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import NetflixLogoHeader from "./NeflixLogoHeader/NetflixLogoHeader";
+import { ErrorMessage } from "@hookform/error-message";
 
 const Login = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    mode: ["onBlur", "onChange", "onSubmit"],
+    reValidateMode: "onChange",
+    criteriaMode: "all",
+  });
+
+  const onSubmit = (data) => console.log(data);
+
   return (
     <div className="h-full">
       {/* Background Image */}
@@ -24,18 +37,62 @@ const Login = () => {
       <div className="relative z-10 flex items-center justify-center h-full">
         <div className="bg-black/75 p-16 rounded-md w-full max-w-md">
           <h1 className="text-3xl font-bold text-white mb-8">Sign In</h1>
-          <form className="flex flex-col gap-4">
-            <input
-              type="email"
-              placeholder="Email"
-              className="p-4 rounded bg-gray-700 text-white"
-            />
-            <input
-              type="password"
-              placeholder="Password"
-              className="p-4 rounded bg-gray-700 text-white"
-            />
-            <button className="bg-red-600 text-white p-4 rounded font-bold hover:bg-red-700">
+          <form
+            className="flex flex-col gap-4"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <div className="flex flex-col gap-1">
+              <input
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Invalid email address",
+                  },
+                })}
+                type="email"
+                placeholder="Email"
+                className={`p-4 rounded bg-gray-700 text-white ${
+                  errors.email ? "border border-red-500" : ""
+                }`}
+              />
+              <ErrorMessage
+                errors={errors}
+                name="email"
+                render={({ message }) => (
+                  <p className="text-red-500 text-sm mt-1">{message}</p>
+                )}
+              />
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <input
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters",
+                  },
+                })}
+                type="password"
+                placeholder="Password"
+                className={`p-4 rounded bg-gray-700 text-white ${
+                  errors.password ? "border border-red-500" : ""
+                }`}
+              />
+              <ErrorMessage
+                errors={errors}
+                name="password"
+                render={({ message }) => (
+                  <p className="text-red-500 text-sm mt-1">{message}</p>
+                )}
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="bg-red-600 text-white p-4 rounded font-bold hover:bg-red-700"
+            >
               Sign In
             </button>
           </form>
