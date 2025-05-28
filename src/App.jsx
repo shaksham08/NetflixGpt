@@ -3,8 +3,8 @@ import "./App.css";
 import Body from "./components/Body";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import Browse from "./components/Browse";
-import Login from "./components/Login";
-import SignUp from "./components/SignUp";
+import Login from "./components/Login/Login";
+import SignUp from "./components/SignUp/SignUp";
 
 function App() {
   const router = createBrowserRouter([

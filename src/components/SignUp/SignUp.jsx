@@ -1,10 +1,10 @@
 import React from "react";
-import { useForm } from "react-hook-form";
 import { Link } from "react-router";
-import NetflixLogoHeader from "./NeflixLogoHeader/NetflixLogoHeader";
+import { useForm } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
+import NetflixLogoHeader from "../NeflixLogoHeader/NetflixLogoHeader";
 
-const Login = () => {
+const SignUp = () => {
   const {
     register,
     handleSubmit,
@@ -18,7 +18,7 @@ const Login = () => {
   const onSubmit = (data) => console.log(data);
 
   return (
-    <div className="h-full">
+    <div className="relative h-screen">
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
@@ -33,14 +33,38 @@ const Login = () => {
         <NetflixLogoHeader />
       </div>
 
-      {/* Login Form */}
-      <div className="relative z-10 flex items-center justify-center h-full">
+      {/* Sign Up Form */}
+      <div className="relative z-10 flex items-center justify-center">
         <div className="bg-black/75 p-16 rounded-md w-full max-w-md">
-          <h1 className="text-3xl font-bold text-white mb-8">Sign In</h1>
+          <h1 className="text-3xl font-bold text-white mb-8">Sign Up</h1>
           <form
             className="flex flex-col gap-4"
             onSubmit={handleSubmit(onSubmit)}
           >
+            <div className="flex flex-col gap-1">
+              <input
+                {...register("name", {
+                  required: "Name is required",
+                  minLength: {
+                    value: 2,
+                    message: "Name must be at least 2 characters",
+                  },
+                })}
+                type="text"
+                placeholder="Name"
+                className={`p-4 rounded bg-gray-700 text-white ${
+                  errors.name ? "border border-red-500" : ""
+                }`}
+              />
+              <ErrorMessage
+                errors={errors}
+                name="name"
+                render={({ message }) => (
+                  <p className="text-red-500 text-sm mt-1">{message}</p>
+                )}
+              />
+            </div>
+
             <div className="flex flex-col gap-1">
               <input
                 {...register("email", {
@@ -93,20 +117,17 @@ const Login = () => {
               type="submit"
               className="bg-red-600 text-white p-4 rounded font-bold hover:bg-red-700"
             >
-              Sign In
+              Sign Up
             </button>
           </form>
 
           {/* Additional Links */}
           <div className="mt-4 text-gray-400">
             <div className="flex flex-col gap-4">
-              <button className="text-left hover:underline">
-                Forgot password?
-              </button>
               <div>
-                <span>New to Netflix? </span>
-                <Link to="/signup" className="text-white hover:underline">
-                  Sign up now.
+                <span>Already have an account? </span>
+                <Link to="/login" className="text-white hover:underline">
+                  Sign in now.
                 </Link>
               </div>
             </div>
@@ -117,4 +138,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;

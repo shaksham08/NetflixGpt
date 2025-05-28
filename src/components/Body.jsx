@@ -1,12 +1,12 @@
 import React from "react";
-import Login from "./Login";
+
 import Browse from "./Browse";
+import Login from "./Login/Login";
 
 const Body = () => {
   return (
     <>
       <Login />
-      <Browse />
     </>
   );
 };
