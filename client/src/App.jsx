@@ -1,10 +1,10 @@
-import { useState } from "react";
+import React from "react";
 import "./App.css";
 import Body from "./components/Body";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import Browse from "./components/Browse";
-import Login from "./components/Login/Login";
-import SignUp from "./components/SignUp/SignUp";
+import Login from "./pages/Login/Login";
+import SignUp from "./pages/SignUp/SignUp";
 
 function App() {
   const router = createBrowserRouter([
