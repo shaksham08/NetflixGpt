@@ -8,6 +8,8 @@ import FormInput from "../../components/Form/FormInput";
 import FormButton from "../../components/Form/FormButton";
 import FormContainer from "../../components/Form/FormContainer";
 import Background from "../../components/Background/Background";
+import axios from "axios";
+import API_CONFIG, { getApiUrl } from "../../config/api.config";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email address"),
@@ -16,6 +18,18 @@ const loginSchema = z.object({
     .min(1, "Password is required")
     .min(6, "Password must be at least 6 characters"),
 });
+
+const handleLogin = async (data) => {
+  try {
+    const response = await axios.post(
+      getApiUrl(API_CONFIG.endpoints.auth.login),
+      data
+    );
+    console.log(response);
+  } catch (err) {
+    console.log(err);
+  }
+};
 
 const Login = () => {
   const {
@@ -29,7 +43,9 @@ const Login = () => {
     criteriaMode: "all",
   });
 
-  const onSubmit = (data) => console.log(data);
+  const onSubmit = (data) => {
+    handleLogin(data);
+  };
 
   return (
     <Background>
