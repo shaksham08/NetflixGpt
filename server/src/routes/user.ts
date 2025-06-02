@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import express, { Router } from "express";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 const userRouter = Router();
 
@@ -41,10 +42,15 @@ userRouter.post(
         return;
       }
 
+      const token = jwt.sign(
+        { userId: user.id, email: user.email },
+        process.env.JWT_SECRET || "fallback-secret-key",
+        { expiresIn: "24h" }
+      );
+
       res.json({
-        id: user.id,
-        name: user.name,
-        email: user.email,
+        user: { id: user.id, name: user.name, email: user.email },
+        token,
       });
     } catch (err) {
       console.log(err);
@@ -90,7 +96,16 @@ userRouter.post(
         },
       });
 
-      res.json(newUser);
+      const token = jwt.sign(
+        { userId: newUser.id, email: newUser.email },
+        process.env.JWT_SECRET || "fallback-secret-key",
+        { expiresIn: "24h" }
+      );
+
+      res.json({
+        user: { id: newUser.id, name: newUser.name, email: newUser.email },
+        token,
+      });
     } catch (err) {
       console.log(err);
       res.status(500).json({
