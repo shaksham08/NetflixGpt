@@ -19,18 +19,6 @@ const loginSchema = z.object({
     .min(6, "Password must be at least 6 characters"),
 });
 
-const handleLogin = async (data) => {
-  try {
-    const response = await axios.post(
-      getApiUrl(API_CONFIG.endpoints.auth.login),
-      data
-    );
-    console.log(response);
-  } catch (err) {
-    console.log(err);
-  }
-};
-
 const Login = () => {
   const {
     register,
@@ -42,6 +30,18 @@ const Login = () => {
     reValidateMode: "onChange",
     criteriaMode: "all",
   });
+
+  const handleLogin = async (data) => {
+    try {
+      const response = await axios.post(
+        getApiUrl(API_CONFIG.endpoints.auth.login),
+        data
+      );
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const onSubmit = (data) => {
     handleLogin(data);
