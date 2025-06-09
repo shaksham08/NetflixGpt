@@ -10,7 +10,7 @@ import FormContainer from "../../components/Form/FormContainer";
 import Background from "../../components/Background/Background";
 import axios from "axios";
 import API_CONFIG, { getApiUrl } from "../../config/api.config";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { addUser } from "../../store/slices/userSlice";
 
 const loginSchema = z.object({
@@ -40,7 +40,8 @@ const Login = () => {
         getApiUrl(API_CONFIG.endpoints.auth.login),
         data
       );
-      dispatch(addUser(response.data.user));
+      const userData = response.data.user;
+      dispatch(addUser(userData));
     } catch (err) {
       console.log(err);
     }
