@@ -10,6 +10,8 @@ import FormContainer from "../../components/Form/FormContainer";
 import Background from "../../components/Background/Background";
 import axios from "axios";
 import API_CONFIG, { getApiUrl } from "../../config/api.config";
+import { useSelector, useDispatch } from "react-redux";
+import { addUser } from "../../store/slices/userSlice";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email address"),
@@ -20,6 +22,7 @@ const loginSchema = z.object({
 });
 
 const Login = () => {
+  const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
@@ -37,7 +40,7 @@ const Login = () => {
         getApiUrl(API_CONFIG.endpoints.auth.login),
         data
       );
-      console.log(response);
+      dispatch(addUser(response.data.user));
     } catch (err) {
       console.log(err);
     }
