@@ -10,8 +10,17 @@ import FormContainer from "../../components/Form/FormContainer";
 import Background from "../../components/Background/Background";
 import axios from "axios";
 import API_CONFIG, { getApiUrl } from "../../config/api.config";
-import { useDispatch } from "react-redux";
-import { addUser } from "../../store/slices/userSlice";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setAuthError,
+  setAuthLoading,
+  setUser,
+} from "../../store/features/auth/authSlice";
+import {
+  selectAuthError,
+  selectAuthLoading,
+} from "../../store/features/auth/authSelectors";
+import ErrorBox from "../../components/ErrorBox/ErrorBox";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email address"),
@@ -22,6 +31,10 @@ const loginSchema = z.object({
 });
 
 const Login = () => {
+  // In your component
+  const error = useSelector(selectAuthError);
+  const isLoading = useSelector(selectAuthLoading);
+
   const dispatch = useDispatch();
   const {
     register,
@@ -35,15 +48,21 @@ const Login = () => {
   });
 
   const handleLogin = async (data) => {
+    dispatch(setAuthLoading(true));
     try {
       const response = await axios.post(
         getApiUrl(API_CONFIG.endpoints.auth.login),
         data
       );
       const userData = response.data.user;
-      dispatch(addUser(userData));
+      dispatch(setUser(userData));
+      dispatch(setAuthError(""));
     } catch (err) {
       console.log(err);
+      const errorMessage = `Incorrect password for ${data.email}. You can use a sign-in code, reset your password or try again.`;
+      dispatch(setAuthError(errorMessage));
+    } finally {
+      dispatch(setAuthLoading(false));
     }
   };
 
@@ -60,6 +79,8 @@ const Login = () => {
             className="flex flex-col gap-4"
             onSubmit={handleSubmit(onSubmit)}
           >
+            {error && <ErrorBox message={error} />}
+
             <FormInput
               register={register}
               name="email"
@@ -74,7 +95,9 @@ const Login = () => {
               placeholder="Password"
               errors={errors}
             />
-            <FormButton>Sign In</FormButton>
+            <FormButton disabled={isLoading}>
+              {isLoading ? "Signing In..." : "Sign In"}
+            </FormButton>
           </form>
 
           {/* Additional Links */}
