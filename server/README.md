@@ -4,7 +4,7 @@
 
 ### Login
 
-- **Endpoint**: `/login`
+- **Endpoint**: `/user/login`
 - **Method**: POST
 - **Description**: Authenticates a user and returns a JWT token
 - **Payload**:
@@ -18,38 +18,55 @@
   - **Code**: 200 OK
   ```json
   {
-    "jwtAccessToken": "string",
-    "userData": {
+    "user": {
       "id": "string",
       "name": "string",
-      "email": "string",
-      "createdAt": "string"
-    }
+      "email": "string"
+    },
+    "token": "string"
   }
   ```
 - **Error Responses**:
   - **Code**: 400 Bad Request
   ```json
   {
-    "error": {
-      "code": "INVALID_CREDENTIALS",
-      "message": "Invalid email or password"
-    }
+    "error": "User not found"
+  }
+  ```
+  or
+  ```json
+  {
+    "error": "Invalid password"
+  }
+  ```
+  or
+  ```json
+  {
+    "error": "Invalid email format"
+  }
+  ```
+  or
+  ```json
+  {
+    "error": "Password must be at least 6 characters"
   }
   ```
   - **Code**: 429 Too Many Requests
   ```json
   {
-    "error": {
-      "code": "RATE_LIMIT_EXCEEDED",
-      "message": "Too many login attempts. Please try again later"
-    }
+    "error": "Too many requests, please try again later"
+  }
+  ```
+  - **Code**: 500 Internal Server Error
+  ```json
+  {
+    "error": "Internal server error"
   }
   ```
 
 ### Sign Up
 
-- **Endpoint**: `/signUp`
+- **Endpoint**: `/user/signup`
 - **Method**: POST
 - **Description**: Creates a new user account
 - **Payload**:
@@ -61,39 +78,52 @@
   }
   ```
 - **Success Response**:
-  - **Code**: 201 Created
+  - **Code**: 200 OK
   ```json
   {
-    "jwtAccessToken": "string",
-    "userData": {
+    "user": {
       "id": "string",
       "name": "string",
-      "email": "string",
-      "createdAt": "string"
-    }
+      "email": "string"
+    },
+    "token": "string"
   }
   ```
 - **Error Responses**:
   - **Code**: 400 Bad Request
   ```json
   {
-    "error": {
-      "code": "VALIDATION_ERROR",
-      "message": "Invalid input data",
-      "details": {
-        "email": "Invalid email format",
-        "password": "Password must be at least 8 characters"
-      }
-    }
+    "error": "User already exists"
   }
   ```
-  - **Code**: 409 Conflict
+  or
   ```json
   {
-    "error": {
-      "code": "EMAIL_EXISTS",
-      "message": "Email already registered"
-    }
+    "error": "Invalid email format"
+  }
+  ```
+  or
+  ```json
+  {
+    "error": "Password must be at least 6 characters"
+  }
+  ```
+  or
+  ```json
+  {
+    "error": "Name must be at least 2 characters"
+  }
+  ```
+  - **Code**: 429 Too Many Requests
+  ```json
+  {
+    "error": "Too many requests, please try again later"
+  }
+  ```
+  - **Code**: 500 Internal Server Error
+  ```json
+  {
+    "error": "Internal server error"
   }
   ```
 
@@ -112,5 +142,6 @@
 
 - All endpoints use HTTPS
 - JWT tokens expire after 24 hours
-- Rate limiting is applied to prevent brute force attacks
+- Rate limiting is applied (100 requests per 15 minutes per IP)
 - Passwords are hashed using bcrypt
+- Input validation using Zod schema
