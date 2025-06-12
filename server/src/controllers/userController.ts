@@ -8,6 +8,9 @@ import {
   validateLoginInput,
   validateSignupInput,
 } from "../validators/userValidator";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 export const login = async (req: Request, res: Response) => {
   try {
@@ -36,3 +39,20 @@ export const signup = async (req: Request, res: Response) => {
     }
   }
 };
+
+// export const resetPassword = async (req: Request, res: Response) => {
+//   try {
+//     const { email } = req.body;
+//     const user = await prisma.user.findUnique({
+//       where: { email },
+//     });
+
+//     if (!user) {
+//       throw new ApiError(400, "User not found");
+//     }
+
+//     const token = crypto.randomBytes(20).toString("hex");
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
