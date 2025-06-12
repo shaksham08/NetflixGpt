@@ -59,7 +59,7 @@ const Login = () => {
       dispatch(setAuthError(""));
     } catch (err) {
       console.log(err);
-      const errorMessage = `Incorrect password for ${data.email}. You can use a sign-in code, reset your password or try again.`;
+      const errorMessage = `Incorrect password for ${data.email}.R0eset your password or try again.`;
       dispatch(setAuthError(errorMessage));
     } finally {
       dispatch(setAuthLoading(false));
@@ -103,9 +103,9 @@ const Login = () => {
           {/* Additional Links */}
           <div className="mt-4 text-gray-400">
             <div className="flex flex-col gap-4">
-              <button className="text-left hover:underline">
+              <Link to="/reset-password" className="text-left hover:underline">
                 Forgot password?
-              </button>
+              </Link>
               <div>
                 <span>New to Netflix? </span>
                 <Link to="/signup" className="text-white hover:underline">

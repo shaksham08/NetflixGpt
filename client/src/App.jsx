@@ -5,6 +5,8 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import Browse from "./components/Browse";
 import Login from "./pages/Login/Login";
 import SignUp from "./pages/SignUp/SignUp";
+import ResetPassword from "./pages/ResetPassword/ResetPassword";
+import UpdatePassword from "./pages/UpdatePassword/UpdatePassword";
 
 function App() {
   const router = createBrowserRouter([
@@ -15,6 +17,14 @@ function App() {
     {
       path: "/login",
       element: <Login />,
+    },
+    {
+      path: "/reset-password",
+      element: <ResetPassword />,
+    },
+    {
+      path: "/update-password",
+      element: <UpdatePassword />,
     },
     {
       path: "/signup",

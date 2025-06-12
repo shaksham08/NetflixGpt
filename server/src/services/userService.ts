@@ -2,6 +2,8 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { ApiError } from "../utils/ApiError";
+import crypto from "crypto";
+import { sendPasswordResetEmail } from "./emailService";
 
 const prisma = new PrismaClient();
 
@@ -75,4 +77,95 @@ export const signup = async (email: string, password: string, name: string) => {
     },
     token,
   };
+};
+
+export const resetPassword = async (email: string) => {
+  const user = await prisma.user.findUnique({
+    where: { email },
+  });
+
+  if (!user) {
+    throw new ApiError(400, "User not found");
+  }
+
+  // Delete any existing reset tokens for this user
+  await prisma.passwordResetToken.deleteMany({
+    where: { userId: user.id },
+  });
+
+  // Generate a secure random token
+  const resetToken = crypto.randomBytes(32).toString("hex");
+  const tokenExpiry = new Date(Date.now() + 3600000); // Token valid for 1 hour
+
+  // Create a new password reset token
+  await prisma.passwordResetToken.create({
+    data: {
+      token: resetToken,
+      userId: user.id,
+      expiresAt: tokenExpiry,
+    },
+  });
+
+  // Generate reset link
+  const resetLink = `${process.env.FRONTEND_URL}/update-password?token=${resetToken}`;
+
+  // Send password reset email
+  await sendPasswordResetEmail(email, resetLink);
+};
+
+export const validateResetToken = async (token: string) => {
+  const resetToken = await prisma.passwordResetToken.findFirst({
+    where: {
+      token,
+      expiresAt: {
+        gt: new Date(),
+      },
+      used: false,
+    },
+  });
+
+  if (!resetToken) {
+    throw new ApiError(400, "Invalid or expired reset token");
+  }
+
+  return true;
+};
+
+export const updatePassword = async (token: string, newPassword: string) => {
+  const resetToken = await prisma.passwordResetToken.findFirst({
+    where: {
+      token,
+      expiresAt: {
+        gt: new Date(),
+      },
+      used: false,
+    },
+    include: {
+      user: true,
+    },
+  });
+
+  if (!resetToken) {
+    throw new ApiError(400, "Invalid or expired reset token");
+  }
+
+  const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+  // Update password and mark token as used
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: resetToken.userId },
+      data: {
+        password: hashedPassword,
+      },
+    }),
+    prisma.passwordResetToken.update({
+      where: { id: resetToken.id },
+      data: {
+        used: true,
+      },
+    }),
+  ]);
+
+  return true;
 };
