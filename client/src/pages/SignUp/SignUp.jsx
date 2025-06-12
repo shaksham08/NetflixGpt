@@ -8,6 +8,8 @@ import FormInput from "../../components/Form/FormInput";
 import FormButton from "../../components/Form/FormButton";
 import FormContainer from "../../components/Form/FormContainer";
 import Background from "../../components/Background/Background";
+import axios from "axios";
+import API_CONFIG, { getApiUrl } from "../../config/api.config";
 
 const signUpSchema = z.object({
   name: z
@@ -33,7 +35,24 @@ const SignUp = () => {
     criteriaMode: "all",
   });
 
-  const onSubmit = (data) => console.log(data);
+  // const dispatch = useDispatch();
+
+  const handleLogin = async (data) => {
+    try {
+      const response = await axios.post(
+        getApiUrl(API_CONFIG.endpoints.auth.signup),
+        { email: data.email }
+      );
+
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      // dispatch(setAuthLoading(false));
+    }
+  };
+
+  const onSubmit = (data) => handleLogin(data);
 
   return (
     <Background>

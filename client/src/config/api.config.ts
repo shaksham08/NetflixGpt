@@ -6,6 +6,7 @@ const API_CONFIG = {
       login: "/user/login",
       signup: "/user/signup",
       logout: "/user/logout",
+      resetPassword: "/user/reset-password",
     },
     user: {
       profile: "/user/profile",
