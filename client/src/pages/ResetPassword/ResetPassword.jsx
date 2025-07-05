@@ -8,8 +8,7 @@ import FormInput from "../../components/Form/FormInput";
 import { useForm } from "react-hook-form";
 import FormButton from "../../components/Form/FormButton";
 import { Link } from "react-router";
-import axios from "axios";
-import API_CONFIG, { getApiUrl } from "../../config/api.config";
+import { authAPI } from "../../config/api.config";
 
 const forgotPasswordSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email address"),
@@ -31,10 +30,7 @@ const ResetPassword = () => {
 
   const handleResetPassword = async (data) => {
     try {
-      await axios.post(
-        getApiUrl(API_CONFIG.endpoints.auth.resetPassword),
-        data
-      );
+      await authAPI.resetPassword(data);
       setIsEmailSent(true);
     } catch (err) {
       console.error(err);

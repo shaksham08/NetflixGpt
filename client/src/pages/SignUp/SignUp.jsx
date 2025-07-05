@@ -8,8 +8,18 @@ import FormInput from "../../components/Form/FormInput";
 import FormButton from "../../components/Form/FormButton";
 import FormContainer from "../../components/Form/FormContainer";
 import Background from "../../components/Background/Background";
-import axios from "axios";
-import API_CONFIG, { getApiUrl } from "../../config/api.config";
+import { authAPI } from "../../config/api.config";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  setAuthError,
+  setAuthLoading,
+  setUser,
+} from "../../store/features/auth/authSlice";
+import {
+  selectAuthError,
+  selectAuthLoading,
+} from "../../store/features/auth/authSelectors";
+import ErrorBox from "../../components/ErrorBox/ErrorBox";
 
 const signUpSchema = z.object({
   name: z
@@ -24,6 +34,10 @@ const signUpSchema = z.object({
 });
 
 const SignUp = () => {
+  const error = useSelector(selectAuthError);
+  const isLoading = useSelector(selectAuthLoading);
+  const dispatch = useDispatch();
+
   const {
     register,
     handleSubmit,
@@ -35,34 +49,37 @@ const SignUp = () => {
     criteriaMode: "all",
   });
 
-  // const dispatch = useDispatch();
-
-  const handleLogin = async (data) => {
+  const handleSignup = async (data) => {
+    dispatch(setAuthLoading(true));
     try {
-      const response = await axios.post(
-        getApiUrl(API_CONFIG.endpoints.auth.signup),
-        { email: data.email }
-      );
+      const response = await authAPI.signup(data);
 
-      console.log(response);
+      const userData = response.data.user;
+      dispatch(setUser(userData));
+      dispatch(setAuthError(""));
     } catch (err) {
       console.log(err);
+      const errorMessage =
+        err.response?.data?.error || "Signup failed. Please try again.";
+      dispatch(setAuthError(errorMessage));
     } finally {
-      // dispatch(setAuthLoading(false));
+      dispatch(setAuthLoading(false));
     }
   };
 
-  const onSubmit = (data) => handleLogin(data);
+  const onSubmit = (data) => handleSignup(data);
 
   return (
     <Background>
       <NetflixLogoHeader />
-      <div className="flex items-center justify-center">
+      <div className="flex items-center justify-center h-full">
         <FormContainer title="Sign Up">
           <form
             className="flex flex-col gap-4"
             onSubmit={handleSubmit(onSubmit)}
           >
+            {error && <ErrorBox message={error} />}
+
             <FormInput
               register={register}
               name="name"
@@ -84,7 +101,9 @@ const SignUp = () => {
               placeholder="Password"
               errors={errors}
             />
-            <FormButton>Sign Up</FormButton>
+            <FormButton disabled={isLoading}>
+              {isLoading ? "Signing Up..." : "Sign Up"}
+            </FormButton>
           </form>
 
           {/* Additional Links */}

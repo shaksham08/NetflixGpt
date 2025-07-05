@@ -8,8 +8,7 @@ import FormContainer from "../../components/Form/FormContainer";
 import FormInput from "../../components/Form/FormInput";
 import { useForm } from "react-hook-form";
 import FormButton from "../../components/Form/FormButton";
-import axios from "axios";
-import API_CONFIG, { getApiUrl } from "../../config/api.config";
+import { authAPI } from "../../config/api.config";
 
 const updatePasswordSchema = z
   .object({
@@ -53,10 +52,7 @@ const UpdatePassword = () => {
       }
 
       try {
-        await axios.post(
-          getApiUrl(API_CONFIG.endpoints.auth.validateResetToken),
-          { token }
-        );
+        await authAPI.validateResetToken({ token });
         setIsTokenValid(true);
       } catch (err) {
         console.log(err);
@@ -72,7 +68,7 @@ const UpdatePassword = () => {
   const handleUpdatePassword = async (data) => {
     const token = searchParams.get("token");
     try {
-      await axios.post(getApiUrl(API_CONFIG.endpoints.auth.updatePassword), {
+      await authAPI.updatePassword({
         token,
         password: data.password,
       });

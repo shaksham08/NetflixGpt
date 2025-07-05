@@ -12,11 +12,16 @@ import {
   validateSignupInput,
   validateUpdatePasswordInput,
 } from "../validators/userValidator";
+import config from "../config/config";
 
 export const login = async (req: Request, res: Response) => {
   try {
     const { email, password } = validateLoginInput(req.body);
     const result = await loginService(email, password);
+    res.cookie("netflix_id", result.token, {
+      httpOnly: true, // Makes the cookie inaccessible to client-side JavaScript
+      secure: config.nodeEnv === "production", // Sends the cookie only over HTTPS
+    });
     res.json(result);
   } catch (error: unknown) {
     if (error instanceof ApiError) {
@@ -31,6 +36,10 @@ export const signup = async (req: Request, res: Response) => {
   try {
     const { email, password, name } = validateSignupInput(req.body);
     const result = await signupService(email, password, name);
+    res.cookie("netflix_id", result.token, {
+      httpOnly: true, // Makes the cookie inaccessible to client-side JavaScript
+      secure: config.nodeEnv === "production", // Sends the cookie only over HTTPS
+    });
     res.json(result);
   } catch (error: unknown) {
     if (error instanceof ApiError) {

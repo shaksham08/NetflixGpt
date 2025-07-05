@@ -8,8 +8,7 @@ import FormInput from "../../components/Form/FormInput";
 import FormButton from "../../components/Form/FormButton";
 import FormContainer from "../../components/Form/FormContainer";
 import Background from "../../components/Background/Background";
-import axios from "axios";
-import API_CONFIG, { getApiUrl } from "../../config/api.config";
+import { authAPI } from "../../config/api.config";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setAuthError,
@@ -50,16 +49,16 @@ const Login = () => {
   const handleLogin = async (data) => {
     dispatch(setAuthLoading(true));
     try {
-      const response = await axios.post(
-        getApiUrl(API_CONFIG.endpoints.auth.login),
-        data
-      );
+      const response = await authAPI.login(data);
+
       const userData = response.data.user;
       dispatch(setUser(userData));
       dispatch(setAuthError(""));
     } catch (err) {
       console.log(err);
-      const errorMessage = `Incorrect password for ${data.email}.R0eset your password or try again.`;
+      const errorMessage =
+        err.response?.data?.error ||
+        `Incorrect password for ${data.email}. Reset your password or try again.`;
       dispatch(setAuthError(errorMessage));
     } finally {
       dispatch(setAuthLoading(false));

@@ -9,7 +9,12 @@ const app = express();
 // middlewares
 
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // ✅ must match frontend
+    credentials: true, // ✅ allow cookies to be sent
+  })
+);
 app.use(limiter);
 app.use(cookieParser());
 
