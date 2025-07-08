@@ -22,7 +22,7 @@ export const login = async (req: Request, res: Response) => {
       httpOnly: true, // Makes the cookie inaccessible to client-side JavaScript
       secure: config.nodeEnv === "production", // Sends the cookie only over HTTPS
     });
-    res.json(result);
+    res.json({ user: result.user });
   } catch (error: unknown) {
     if (error instanceof ApiError) {
       res.status(error.statusCode).json({ error: error.message });
@@ -40,7 +40,7 @@ export const signup = async (req: Request, res: Response) => {
       httpOnly: true, // Makes the cookie inaccessible to client-side JavaScript
       secure: config.nodeEnv === "production", // Sends the cookie only over HTTPS
     });
-    res.json(result);
+    res.json({ user: result.user });
   } catch (error: unknown) {
     if (error instanceof ApiError) {
       res.status(error.statusCode).json({ error: error.message });
