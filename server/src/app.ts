@@ -3,6 +3,7 @@ import userRouter from "./routes/user";
 import cors from "cors";
 import { limiter } from "./middlewares/rateLimiter";
 import cookieParser from "cookie-parser";
+import tmdbRouter from "./routes/tmdb";
 
 const app = express();
 
@@ -20,5 +21,6 @@ app.use(cookieParser());
 
 // routers
 app.use("/user", userRouter);
+app.use("/media", tmdbRouter);
 
 export default app;

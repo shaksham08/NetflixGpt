@@ -216,3 +216,7 @@
 - The token is available in both the response body and as a secure, HTTP-only cookie.
 - Error handling is consistent and uses structured JSON responses.
 - All sensitive operations are protected and validated.
+
+## Future Ideas
+
+1. Host a list of videos on aws first and then load them in real time like how netflix and other platform does. These will be just dummy freemium videos that we can render
