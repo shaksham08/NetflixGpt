@@ -1,4 +1,55 @@
-# API Routes Documentation
+# Server Guide
+
+## Run and Build
+
+### Install
+
+```bash
+npm ci
+```
+
+### Environment
+
+Create `.env` from example and set variables:
+
+```bash
+cp .env.example .env
+```
+
+Required:
+
+- `PORT`=3000
+- `NODE_ENV`=development
+- `JWT_SECRET`=your-strong-secret
+- `TMDB_API_KEY`=your-tmdb-key
+- `FRONTEND_URL`=http://localhost:5173
+- `GMAIL_USER`=you@example.com
+- `GMAIL_PASS`=your-app-password
+- `DATABASE_URL`=postgres connection string (or per your provider)
+
+### Prisma
+
+```bash
+npx prisma migrate deploy   # or: npx prisma migrate dev
+npx prisma generate
+```
+
+### Development
+
+```bash
+npm run dev
+```
+
+### Production build
+
+```bash
+npm run build
+npm start
+```
+
+---
+
+## API Routes Documentation
 
 ## Authentication Routes
 
